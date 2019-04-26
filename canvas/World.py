@@ -1,8 +1,10 @@
 class World:
+    from Food import Food
+    
+    food = Food(PVector(100, 100), random(-1.0, 1.0), 20)
     
     def __init__(self):
         id = 0;
     
     def run(self):
-        stroke(1)
-        circle(width/2, height/2, 10)
+        self.food.show()
