@@ -1,10 +1,10 @@
 from World import World
+w = 400
+h = 400
 
-
-
-world = World()
+world = World(w, h)
 def setup():
-    size(400, 400)
+    size(w, h)
     
 
 def draw():
