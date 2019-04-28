@@ -6,10 +6,10 @@ class Food:
     g = 0
     b = 0
     
-    def __init__(self, position, toxicity, bigness):     
-        self.position = position
-        self.toxicity = toxicity
-        self.bigness = bigness
+    def __init__(self):
+        self.position = PVector(floor(random(0, 400)), floor(random(0, 400)))
+        self.toxicity = random(-1.0, 1.0)
+        self.bigness = random(10, 20)
         self.r = map(self.toxicity, -1.0, 1.0, 255, 0)
         self.g = map(self.toxicity, -1.0, 1.0, 0, 255)
         #self.b = map(toxicity, -1.0, 1.0, 0, 255)
