@@ -10,5 +10,3 @@ def setup():
 def draw():
     background(255)
     world.run()
-
-    
