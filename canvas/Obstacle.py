@@ -5,7 +5,7 @@ class Obstacle:
     bignessY = 0
     
     def __init__(self):
-        self.position = PVector(floor(random(0, 280)), floor(random(0, 280)))
+        self.position = PVector(floor(random(120, 280)), floor(random(120, 280)))
         self.rotation = random(0, TWO_PI)
         self.bignessX = floor(random(20, 60))
         self.bignessY = floor(random(20, 60))

@@ -7,7 +7,7 @@ class Food:
     b = 0
     
     def __init__(self):
-        self.position = PVector(floor(random(0, 360)), floor(random(0, 360)))
+        self.position = PVector(floor(random(40, 360)), floor(random(40, 360)))
         self.toxicity = random(-1.0, 1.0)
         self.bigness = random(10, 20)
         self.r = map(self.toxicity, -1.0, 1.0, 255, 0)
