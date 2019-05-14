@@ -13,7 +13,7 @@ class Vehicle:
     
     #Configuration Variables
     mass = 5
-    max_speed = 5.0
+    max_speed = 0.0
     max_acceleration_rate = 1.0
     max_angular_rate = 5
     vision_radius = 0
@@ -28,7 +28,7 @@ class Vehicle:
     current_health = 0
     current_position = PVector(0.0,0.0)
     current_speed = 0
-    current_angle = 0
+    current_angle = 3.14
     current_target = PVector(0.0,0.0)
     
     #Constructor - called upon agent creation
@@ -38,7 +38,7 @@ class Vehicle:
         #Initialise to a random position
         #x = random.random() * self.world.width_
         #y = random.random() * self.world.height_
-        x = 100.0
+        x = 50.0
         y = 100.0
         #self.current_angle = random.random() * 2 * PI
         self.current_position = PVector(x,y)
@@ -57,14 +57,31 @@ class Vehicle:
         self.show()        
         #desired_angle = self.calc_desired_angle(self.current_position, self.current_target)        
         #self.current_angle = self.increment_angle(self.current_angle, desired_angle, self.max_angular_rate)
-        #println("DesiredAngle: " + str(desired_angle) + " CurrentAngle: " + str(self.current_angle))
-        force_required = self.calculate_force_required()
-        self.apply_force(force_required)
+        thrust_required = self.calculate_thrust_required()
+        rotational_required = self.calculate_rotation_required()
+        self.apply_thrust(thrust_required)
         self.apply_acceleration()
         self.apply_velocity()
         #self.checkBorders()
     
-    def calculate_force_required(self):
+    def add_angle(self,angle):
+        self.current_angle += angle
+        while self.current_angle >= (2*PI):
+            self.current_angle = self.current_angle - (2*PI) 
+        while self.current_angle < (0):
+            self.current_angle = self.current_angle + (2*PI)
+                
+    def calculate_rotation_required(self):
+        current_angle = self.current_angle
+        desired_angle = PVector.angleBetween(self.current_position, self.current_target)
+        println("DesiredAngle: " + str(desired_angle) + " CurrentAngle: " + str(self.current_angle))
+        if abs((current_angle - desired_angle)) > 0.1:
+            self.add_angle(0.01) 
+            self.max_speed = 0.0
+        else:
+            self.max_speed = 1.0
+    
+    def calculate_thrust_required(self):
         #PID controller for thrust
         p_gain  = 10
         i_gain = 0.0
@@ -83,14 +100,14 @@ class Vehicle:
         end_vector = PVector(0.0,0.0)
         PVector.sub(proportional_component,derivitive_component,end_vector) 
         end_vector.limit(8)
-        println("At " + str( self.current_position) + ", tgt: " + str(self.current_target) + " Proj dest: " + str(destination) + " Force vector: " + str(end_vector))
+        println("At " + str( self.current_position) + ", tgt: " + str(self.current_target) + " Proj dest: " + str(destination) + " thrust vector: " + str(end_vector))
         return end_vector
     
-    def apply_force(self, force_vector):
+    def apply_thrust(self, thrust_vector):
         #Using newton's second law F=ma. 
         #Asssume mass is proportional to size so bigger agents take more effort to turn and start/stop.
-        #self.current_acceleration.add(force_vector.div(self.mass))
-        self.current_acceleration.add(force_vector)
+        #self.current_acceleration.add(thrust_vector.div(self.mass))
+        self.current_acceleration.add(thrust_vector)
         #self.current_acceleration.limit(self.max_acceleration_rate)
     
     def apply_acceleration(self):
@@ -157,13 +174,14 @@ class Vehicle:
         translate(self.current_position[0], self.current_position[1])
         # We add a 90 degree rotation because Processing takes 0 degrees to be EAST
         # whereas the triangle is drawn as if 0 degrees is NORTH i.e. pointing upwards
-        rotate(self.current_angle)
+        rotate(self.current_angle + (0.5 * PI))
         beginShape(TRIANGLES);               
         vertex(bottom_left_corner_x,bottom_left_corner_y)
         vertex(bottom_right_corner_x,bottom_right_corner_y)
         vertex(top_vertex_x,top_vertex_y)
-        endShape();
+        endShape();        
         popMatrix();
+        circle(self.current_target[0],self.current_target[1],20)
         
         pass
     
