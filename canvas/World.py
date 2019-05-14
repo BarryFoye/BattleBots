@@ -19,7 +19,7 @@ class World:
             self.obstacle.append(self.Obstacle())
             
         for i in range(0, pop_vehicles):
-            self.vehicle.append(self.Vehicle(w,h))
+            self.vehicle.append(self.Vehicle(self))
 
                 
     def run(self):
