@@ -15,7 +15,7 @@ class Vehicle:
     mass = 5
     max_speed = 0.0
     max_acceleration_rate = 1.0
-    max_angular_rate = 5
+    max_angular_rate = 0.1
     vision_radius = 0
     vision_awareness = 0
     carnivore = False
@@ -54,33 +54,49 @@ class Vehicle:
     
     #update - called every tick
     def update(self):
-        self.show()        
-        #desired_angle = self.calc_desired_angle(self.current_position, self.current_target)        
-        #self.current_angle = self.increment_angle(self.current_angle, desired_angle, self.max_angular_rate)
+        #
+        #Paint the vehicle
+        self.show()
+        #
+        #Work out engine power required
         thrust_required = self.calculate_thrust_required()
+        #
+        #Work out rotation required
         rotational_required = self.calculate_rotation_required()
+        #
+        #Steer and apply throttle
+        self.apply_rotation(rotational_required)
         self.apply_thrust(thrust_required)
+        #
+        #Calculate the new position
         self.apply_acceleration()
         self.apply_velocity()
+        #
+        #Hard limits
         #self.checkBorders()
+                   
+    def calculate_rotation_required(self):
+        current_angle = self.current_angle
+        desired_angle = PVector.angleBetween(self.current_position, self.current_target)
+        return desired_angle - current_angle
     
+    def apply_rotation(self,rotation_required):
+        #println("DesiredAngle: " + str(desired_angle) + " CurrentAngle: " + str(self.current_angle))
+        if rotation_required > self.max_angular_rate:
+            rotation = max_angular_rate
+        elif rotation_required < (-1 * self.max_angular_rate):
+            rotation = (-1 * self.max_angular_rate)
+        else:
+            rotation = rotation_required 
+        self.add_angle(rotation)
+
     def add_angle(self,angle):
         self.current_angle += angle
         while self.current_angle >= (2*PI):
             self.current_angle = self.current_angle - (2*PI) 
         while self.current_angle < (0):
-            self.current_angle = self.current_angle + (2*PI)
-                
-    def calculate_rotation_required(self):
-        current_angle = self.current_angle
-        desired_angle = PVector.angleBetween(self.current_position, self.current_target)
-        println("DesiredAngle: " + str(desired_angle) + " CurrentAngle: " + str(self.current_angle))
-        if abs((current_angle - desired_angle)) > 0.1:
-            self.add_angle(0.01) 
-            self.max_speed = 0.0
-        else:
-            self.max_speed = 1.0
-    
+            self.current_angle = self.current_angle + (2*PI)    
+            
     def calculate_thrust_required(self):
         #PID controller for thrust
         p_gain  = 10
@@ -107,6 +123,8 @@ class Vehicle:
         #Using newton's second law F=ma. 
         #Asssume mass is proportional to size so bigger agents take more effort to turn and start/stop.
         #self.current_acceleration.add(thrust_vector.div(self.mass))
+        effective_thrust_vector = copy.deepcopy(thrust_vector)
+        effective_thrust_vector.rotate(self.current_angle + HALF_PI)
         self.current_acceleration.add(thrust_vector)
         #self.current_acceleration.limit(self.max_acceleration_rate)
     
