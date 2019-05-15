@@ -6,15 +6,11 @@ class Vehicle:
 
     #reference to the world
     world = [ ]
-
-    #Supplied by the world
-    world_height = 0
-    world_width = 0
     
     #Configuration Variables
     mass = 5
     max_speed = 0.5
-    max_acceleration_rate = 1.0
+    max_acceleration_rate = 0.1
     max_angular_rate = 0.1
     vision_radius = 0
     vision_awareness = 0
@@ -24,7 +20,7 @@ class Vehicle:
     border_size = 20
     
     #State variables
-    current_ai =  [ ]
+    current_ai = VehicleAI.WanderAI() 
     current_health = 0
     current_position = PVector(0.0,0.0)
     current_speed = 0
@@ -44,14 +40,13 @@ class Vehicle:
         self.current_acceleration = PVector(0.0,0.0)
         self.current_target = PVector(0.0,0.0)
         self.world = world
-        #####
-        mid_x = 0.5 * self.world.width_
-        mid_y = 0.5 * self.world.height_  
-        self.current_target = PVector(mid_x, mid_y)
-        
+        self.ai = VehicleAI.WanderAI()       
     
     #update - called every tick
     def update(self):
+        #
+        #Run AI to work out where we want to go
+        self.current_target = self.current_ai.Get_Current_Target(self)
         #
         #Paint the vehicle
         self.show()
@@ -163,7 +158,7 @@ class Vehicle:
         vertex(top_vertex_x,top_vertex_y)
         endShape();        
         popMatrix();
-        circle(self.current_target[0],self.current_target[1],20)
+        #circle(self.current_target[0],self.current_target[1],20)
         
         pass
     
