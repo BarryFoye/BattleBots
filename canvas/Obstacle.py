@@ -12,12 +12,13 @@ class Obstacle:
     cy = 0
     dx = 0
     dy = 0
-    cox = 0
-    coy = 0
-    
+    coordsX = []
+    coordsY = []
+    oddNodes = False
     
     def __init__(self):
-        self.position = PVector(floor(random(120, 280)), floor(random(120, 280)))#120 and 280 means th food will fall within a border 120 pix insids the screen
+        #self.position = PVector(floor(random(120, 280)), floor(random(120, 280)))#120 and 280 means th food will fall within a border 120 pix insids the screen
+        self.position = PVector(200, 200)
         self.rotation = random(0, TWO_PI)
         self.bignessX = floor(random(20, 60))
         self.bignessY = floor(random(20, 60))
@@ -31,33 +32,22 @@ class Obstacle:
         rotate(self.rotation)
         rect(0, 0, self.bignessX, self.bignessY)
         popMatrix()
-        stroke(0)
-        ellipse(self.ax, self.ay, 2, 2)
-        stroke(255, 0 , 0)
-        ellipse(self.bx, self.by, 2, 2)
-        stroke(0, 255, 0)
-        ellipse(self.cx, self.cy, 2, 2)
-        stroke(0, 0, 255)
-        ellipse(self.dx, self.dy, 2, 2)
-        #
-        # newx = self.cox * cos(self.rotation) + self.coy * sin(self.rotation)
-        # newy = self.coy * cos(self.rotation) - self.cox * sin(self.rotation)
+        # stroke(0)
+        # ellipse(self.ax, self.ay, 2, 2)
+        # stroke(255, 0 , 0)
+        # ellipse(self.bx, self.by, 2, 2)
+        # stroke(0, 255, 0)
+        # ellipse(self.cx, self.cy, 2, 2)
+        # stroke(0, 0, 255)
+        # ellipse(self.dx, self.dy, 2, 2)
         stroke(50, 50, 50)
-        # ellipse(newx, newx, 4, 4)
         line(self.ax, self.ay, self.bx, self.by)
         line(self.ax, self.ay, self.cx, self.cy)
         line(self.cx, self.cy, self.dx, self.dy)
         line(self.dx, self.dy, self.bx, self.by)
-        # print(dist(self.ax, self.ay, newx, newy))
-        # print(dist(self.ax, self.ay, self.bx, self.by))
-        #
-        #
-        #
-        #
-        #
         
     
-    def add_taboo(self): 
+    def hitbox(self): 
         self.ax = self.position.x  
         self.ay = self.position.y
         self.bx = self.ax + self.bignessX
@@ -87,5 +77,27 @@ class Obstacle:
         newy = self.dy * cos(self.rotation) + self.dx * sin(self.rotation)
         self.dx = newx + self.ax
         self.dy = newy + self.ay
-
+        self.coordsX.append(self.ax)
+        self.coordsY.append(self.ay)
+        self.coordsX.append(self.bx)
+        self.coordsY.append(self.by)
+        self.coordsX.append(self.cx)
+        self.coordsY.append(self.cy)
+        self.coordsX.append(self.dx)
+        self.coordsY.append(self.dy)
         
+
+    def isTouching(self, posX, posY):        
+        j=3
+        self.oddNodes = False
+        for i in range(0, j):
+            print("self.coordsY[i] = {} posY = {} self.coordsY[j] = {}").format(self.coordsY[i], posY, self.coordsY[j])
+            if(self.coordsY[i] < posY and self.coordsY[j] >= posY or self.coordsY[j] < posY and self.coordsY[i] >= posY):
+                print("self.coordsX[i] = {} (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i])  = {} posX = {}").format(self.coordsX[i], (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i]), posX)
+                if(self.coordsX[i] + (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i]) < posX):                         
+                    self.oddNodes = not(self.oddNodes)
+                pass
+            pass
+            j=i
+            print(j)    
+        return self.oddNodes

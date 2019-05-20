@@ -8,18 +8,19 @@ class World:
     obstacle = []
     vehicle = []
     taboo = [] # a list to store the location of obstacles and their position and check collision 
+    posX = 200
+    posY = 200
     
     def __init__(self, w, h, pop_food, pop_obstacles, pop_vehicles):
         id = 0;
         self.width_ = w
         self.height_ = h
         for i in range(0, pop_food):
-            self.food.append(self.Food())
-            
+            self.food.append(self.Food())            
         
         for i in range(0, pop_obstacles):
             self.obstacle.append(self.Obstacle())
-            self.obstacle[i].add_taboo() 
+            self.obstacle[i].hitbox() 
             
         for i in range(0, pop_vehicles):
             self.vehicle.append(self.Vehicle(w,h))
@@ -35,6 +36,11 @@ class World:
             
         for i in range(0, len(self.obstacle)):
             self.obstacle[i].show()
+            print(self.obstacle[i].isTouching(self.posX, self.posY))
+            
+        
+        fill(255, 0, 0)
+        circle(self.posX, self.posY, 20)
             
         if(self.spawn_prob() < 0.000):
             self.food.append(self.Food()) 
