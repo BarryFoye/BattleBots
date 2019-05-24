@@ -36,7 +36,7 @@ class World:
             
         for i in range(0, len(self.obstacle)):
             self.obstacle[i].show()
-            print(self.obstacle[i].isTouching(self.posX, self.posY))
+            #print(self.obstacle[i].isTouching(self.posX, self.posY))
             
         
         fill(255, 0, 0)

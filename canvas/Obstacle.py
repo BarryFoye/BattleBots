@@ -91,13 +91,13 @@ class Obstacle:
         j=3
         self.oddNodes = False
         for i in range(0, j):
-            print("self.coordsY[i] = {} posY = {} self.coordsY[j] = {}").format(self.coordsY[i], posY, self.coordsY[j])
+            #print("self.coordsY[i] = {} posY = {} self.coordsY[j] = {}").format(self.coordsY[i], posY, self.coordsY[j])
             if(self.coordsY[i] < posY and self.coordsY[j] >= posY or self.coordsY[j] < posY and self.coordsY[i] >= posY):
-                print("self.coordsX[i] = {} (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i])  = {} posX = {}").format(self.coordsX[i], (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i]), posX)
+                #print("self.coordsX[i] = {} (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i])  = {} posX = {}").format(self.coordsX[i], (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i]), posX)
                 if(self.coordsX[i] + (posY - self.coordsY[i])/(self.coordsY[j] - self.coordsY[i] - self.coordsX[i]) < posX):                         
                     self.oddNodes = not(self.oddNodes)
                 pass
             pass
             j=i
-            print(j)    
+            #print(j)    
         return self.oddNodes
