@@ -2,6 +2,10 @@ class World:
     from Food import Food
     from Obstacle import Obstacle
     from Vehicle import Vehicle
+    from MCInterface import MCInterface
+    from DNA import DNA
+    
+    m_c_interface = 0
     width_ = 0
     height_ = 0     
     food = []
@@ -15,6 +19,7 @@ class World:
         id = 0;
         self.width_ = w
         self.height_ = h
+        self.m_c_interface = self.MCInterface()
         for i in range(0, pop_food):
             self.food.append(self.Food())            
         
@@ -36,7 +41,7 @@ class World:
             
         for i in range(0, len(self.obstacle)):
             self.obstacle[i].show()
-            print(self.obstacle[i].isTouching(self.posX, self.posY))
+            #print(self.obstacle[i].isTouching(self.posX, self.posY))
             
         
         fill(255, 0, 0)
@@ -44,6 +49,10 @@ class World:
             
         if(self.spawn_prob() < 0.000):
             self.food.append(self.Food()) 
+            
+        
+        self.m_c_interface.model_to_controller()
+        self.m_c_interface.controller_to_model()
    
                      
     def spawn_prob(self):
