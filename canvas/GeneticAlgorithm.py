@@ -18,7 +18,7 @@ class GeneticAlgorithm(object):
     def GenerateRandomGenome(self):
         genome_data = list()
         for i in range(self.genome_length):
-            genome_data.append(random.randint(0,self.genome_numpossibleoptions-1))
+            genome_data.append(random.random(0, 1))
             pass
         return genome_data
 
@@ -71,7 +71,7 @@ class GeneticAlgorithm(object):
             for j in range(len(self.current_generation[i])):
                 rand = random.random() * 100
                 if rand < self.mutation_percent:
-                    self.current_generation[i][j] = random.randint(0,self.genome_numpossibleoptions - 1)
+                    self.current_generation[i][j] = random.random(0, 1)
                     pass
                 pass
             pass
@@ -101,9 +101,8 @@ class GeneticAlgorithm(object):
         self.candidate_scores.append(thisCandidateScore)
 
     #Constructor
-    def __init__(self,GenomeLength, GenomeNumPossibleOptions, GenerationSize, MutationPercent):
+    def __init__(self,GenomeLength, GenerationSize, MutationPercent):
         self.genome_length = GenomeLength
-        self.genome_numpossibleoptions = GenomeNumPossibleOptions
         self.generation_size = GenerationSize
         self.mutation_percent = MutationPercent
         self.ga_logger = logging.getLogger("GeneticAlgorithm")
