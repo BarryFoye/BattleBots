@@ -3,7 +3,7 @@ class World:
     from Obstacle import Obstacle
     from Vehicle import Vehicle
     from MCInterface import MCInterface
-    from DNA import DNA
+    #from DNA import DNA
     
     m_c_interface = 0
     width_ = 0
