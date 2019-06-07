@@ -131,3 +131,4 @@ dmypy.json
 *.class
 *.class
 *.class
+flasksvr/FlaskServer/.vs/FlaskServer/v15/.suo
