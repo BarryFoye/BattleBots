@@ -132,3 +132,4 @@ dmypy.json
 *.class
 *.class
 flasksvr/FlaskServer/.vs/FlaskServer/v15/.suo
+battle_bots_genome_definition.json

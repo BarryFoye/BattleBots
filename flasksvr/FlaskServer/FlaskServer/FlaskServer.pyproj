@@ -28,6 +28,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GeneticAlgorithm.py" />
     <Compile Include="runserver.py" />
     <Compile Include="FlaskServer\__init__.py" />
     <Compile Include="FlaskServer\views.py" />
