@@ -24,12 +24,13 @@ def init_ga():
     genome_length = int(request.args['genome_length'])
     generation_size = int(request.args['generation_size'])
     mutation_percent = int(request.args['mutation_percent'])
+    num_possible_options = int(request.args['num_possible_options'])
     ga_id = ga.new_ga(genome_length,2,generation_size,mutation_percent,ThisMongoCollectionObject[0])
     return str(ga_id)
 
 @app.route('/generate_random_generation', methods=['POST'])
 def get_rnd_generation():
-    """Gets a random generation from the selected GA"""
+    """Gets a random generation from the selected GA. Wipes all other generations, effectively starts from scratch"""
     GetMongoCollection()
     ga_id = ObjectId(request.args['ga_id'])
     inital_generation = ga.GenerateRandomGeneration(ga_id,ThisMongoCollectionObject[0])

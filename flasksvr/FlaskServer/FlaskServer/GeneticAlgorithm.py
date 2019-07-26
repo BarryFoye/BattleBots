@@ -17,13 +17,14 @@ class GeneticAlgorithm(object):
     #Generate an initial generation consisting entirely of random genomes`
     def GenerateRandomGeneration(ga_id,ThisMongoCollectionObject):
         ga = ThisMongoCollectionObject.find_one({'_id': ga_id})
-        generations = list();
-        initial_generation = list();
+        random_generation = list();
         for i in range(ga['generation_size']):
-            initial_generation.append(GeneticAlgorithm.GenerateRandomGenome(ga['genome_length'], ga['genome_numpossibleoptions']))
-        generations.append(initial_generation)
-        ThisMongoCollectionObject.find_one_and_update({"_id": ga_id}, {"$set": {"generations": generations}})
-        return initial_generation
+            random_generation.append({
+                "candidate":GeneticAlgorithm.GenerateRandomGenome(ga['genome_length'], ga['genome_numpossibleoptions']),
+                "score":0
+                })
+        ThisMongoCollectionObject.find_one_and_update({'_id': ga_id}, {'$push': {'generations': random_generation}})
+        return random_generation
 
     #Run a roulette wheel algorithm and build the next generation
     def GetNextGeneration(ga_id, ThisMongoCollectionObject):
@@ -60,7 +61,11 @@ class GeneticAlgorithm(object):
             #    i = random.randint(0,len(scores))-1
             #    parent_2 = candidate_scores[i]['candidate']
             #mate the parents
-            next_generation.extend(GeneticAlgorithm.Mate(parent_1,parent_2))
+            [child1, child2] = GeneticAlgorithm.Mate(parent_1,parent_2)
+            next_generation.extend([
+                {"candidate":child1, "score":0},
+                {"candidate":child2, "score":0}                
+                ])
         GeneticAlgorithm.Mutate(next_generation, ga['genome_numpossibleoptions'], ga['mutation_percent'])
         ThisMongoCollectionObject.find_one_and_update({'_id': ga_id}, {'$push': {'generations': next_generation}})
         return next_generation
@@ -71,7 +76,7 @@ class GeneticAlgorithm(object):
             for j in range(len(generation[i])):
                 rand = random.random() * 100
                 if rand < mutation_percent:
-                    generation[i][j] = random.randint(0,genome_numpossibleoptions - 1)
+                    generation[i]['candidate'][j] = random.randint(0,genome_numpossibleoptions - 1)
                     pass
                 pass
             pass
@@ -99,14 +104,12 @@ class GeneticAlgorithm(object):
     def RecordCandidateScore(ga_id, CandidateIndex, Score, ThisMongoCollectionObject):
         ga = ThisMongoCollectionObject.find_one({'_id': ga_id})
         generation_id = len(ga['generations'])-1
-        this_candidate = ga['generations'][generation_id][CandidateIndex]
+        this_candidate = ga['generations'][generation_id][CandidateIndex]['candidate']
         candidate_data = {"candidate": this_candidate, "score" : Score}
         ThisMongoCollectionObject.find_one_and_update(
             { "_id": ga_id },
             { "$set": { 'generations.'+str(generation_id)+'.'+str(CandidateIndex) : candidate_data}}
         )
-        #TODO: Default all candidates to -1 to start with so you can see which have been scored already and which havent.
-
 
     #Constructor
     def new_ga(GenomeLength, GenomeNumPossibleOptions, GenerationSize, MutationPercent, ThisMongoCollectionObject):
@@ -119,7 +122,8 @@ class GeneticAlgorithm(object):
            'genome_length': GenomeLength,
            'genome_numpossibleoptions': GenomeNumPossibleOptions,
            'generation_size': GenerationSize,
-           'mutation_percent': MutationPercent
+           'mutation_percent': MutationPercent,
+           'generations':[ ]
         }
         result = ThisMongoCollectionObject.insert_one(post_data)
         return result.inserted_id
