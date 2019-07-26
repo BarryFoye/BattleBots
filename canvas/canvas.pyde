@@ -5,10 +5,10 @@ import json
 w = 400
 h = 400
 
-world = World(w, h,3, 3, 0)
+world = World(w, h,3, 3, 3)
 
 def setup():
-    SendHTTPRequest()
+    #SendHTTPRequest()
     size(w, h)
     
 
