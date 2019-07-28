@@ -1,10 +1,17 @@
 import random
 import logging
 import pymongo
+import origin
 from pymongo import MongoClient
 
 class GeneticAlgorithm(object):
     """Class to encapsulate the genetic algorithm in python"""
+
+
+    #Test connection
+    def test_connection():
+        idx = random.randint(0,len(origin.origin)-1)
+        return "Here is a random sentence from The Origin of Species: \n \n    " + origin.origin[idx]
 
     #Generate a random genome
     def GenerateRandomGenome(genome_length, genome_numpossibleoptions):

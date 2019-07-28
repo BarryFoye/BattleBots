@@ -16,6 +16,10 @@ from pymongo import MongoClient
 genetic_alg = []
 ThisMongoCollectionObject = [ ]
 
+@app.route('/test', methods=['POST'])
+def test():
+    return "Your connection to the API is working. \n" + str(ga.test_connection())
+
 @app.route('/init_ga', methods=['POST'])
 def init_ga():
     GetMongoCollection()
@@ -25,7 +29,7 @@ def init_ga():
     generation_size = int(request.args['generation_size'])
     mutation_percent = int(request.args['mutation_percent'])
     num_possible_options = int(request.args['num_possible_options'])
-    ga_id = ga.new_ga(genome_length,2,generation_size,mutation_percent,ThisMongoCollectionObject[0])
+    ga_id = ga.new_ga(genome_length,num_possible_options,generation_size,mutation_percent,ThisMongoCollectionObject[0])
     return str(ga_id)
 
 @app.route('/generate_random_generation', methods=['POST'])
