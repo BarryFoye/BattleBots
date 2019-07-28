@@ -24,7 +24,7 @@ def clean_response_string(r) : return str(r.content).replace("b\'","").replace("
 print("If the connection to the API is working, a random sentence from the origin of species will appear below:")
 print("")
 r = requests.post(url = url_Test_Connection)
-print(clean_response_string(r))
+print(r.content.decode("utf-8"))
 print("")
 
 #Start off by initialising a GA. The API returns an id that uniquely identifies our GA. 
