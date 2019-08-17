@@ -1,12 +1,60 @@
-# This demo will use all functions of the GeneticAlgorithm API
-#it will generate random strings and eventually 'evolve' to the target string inputted by the user
-#It is effectively a reimplementation of the demo shown in this video: https://www.youtube.com/watch?v=9zfeTw-uFCw
-
 import requests
 import json
+import sys
 
-print("Enter a target string. use only lowercase a-z characters:")
-target=input()
+def printTitle():
+    print("""
+ _______ _______        ______  _______ _______ _______ 
+(  ____ (  ___  )      (  __  \(  ____ (       (  ___  )
+| (    \| (   ) |      | (  \  | (    \| () () | (   ) |
+| |     | (___) |      | |   ) | (__   | || || | |   | |
+| | ____|  ___  |      | |   | |  __)  | |(_)| | |   | |
+| | \_  | (   ) |      | |   ) | (     | |   | | |   | |
+| (___) | )   ( |      | (__/  | (____/| )   ( | (___) |
+(_______|/     \|      (______/(_______|/     \(_______)
+                                                        
+====================================================""")
+
+def printHelpText():
+    print ("""
+
+This demo will use all functions of the GeneticAlgorithm API
+it will generate random strings and eventually 'evolve' to the target string inputted by the user
+It is effectively a reimplementation of the demo shown in this video: https://www.youtube.com/watch?v=9zfeTw-uFCw
+
+Run with no command-line arguments to be prompted for each input parameter.
+
+Otherwise, argument 1 is the target string, argument 2 is the generation size, and argument 3 is the mutation percentage.
+For example, to look for "teststr" with a generation size of 200 and a mutation of 2%, use the command:
+
+python GeneticAlgorithmDemo.py teststr 200 2
+
+All arguments are mandatory.
+
+Requires the Flask server to be running and the mongodb connection to be active.
+
+====================================================
+""")
+
+printTitle()
+
+if (len(sys.argv) == 1):
+    print("Enter a target string. use only lowercase a-z characters:")
+    target=input(" >>>")
+    print ("Enter a generation size: ")
+    generation_size = int(input(" >>>"))
+    print ("Enter a mutation percentage: ")
+    mutation_percent = int(input(" >>>"))
+else:
+    if len(sys.argv) == 2:
+        printHelpText()
+        quit()
+    else:
+        target = sys.argv[1]
+        generation_size = sys.argv[2]
+        mutation_percent = sys.argv[3]
+    pass
+
 
 #Set up API connection
 url = "http://localhost:5555"
@@ -30,9 +78,8 @@ print("")
 #Start off by initialising a GA. The API returns an id that uniquely identifies our GA. 
 #We need to store the unique ID as it is required for further API calls.
 target_length = len(target)
-generation_size = 150
-mutation_percent = 10
 num_possible_options = 26 #26 lowercase characters to choose from
+print ("Creating GA with target length: {} Generation size: {} Mutation pct: {} Num options: {}".format(target_length,generation_size,mutation_percent,num_possible_options))
 r = requests.post(url = url_Create_Genetic_Algorithm.format(target_length,generation_size,mutation_percent,num_possible_options))
 
 ga_id = clean_response_string(r)
